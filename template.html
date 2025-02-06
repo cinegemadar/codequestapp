@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Code Quest</title>
+    <!-- Tell the browser our page supports both themes -->
+    <meta name="color-scheme" content="light dark" />
+    <!-- Configure Tailwind to use media queries for dark mode -->
+    <script>
+      tailwind.config = {
+        darkMode: "media",
+      };
+    </script>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- shadcn UI stylesheet (update URL if needed) -->
+    <link rel="stylesheet" href="https://ui.shadcn.com/path/to/style.css" />
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+    <div class="container mx-auto p-4">
+      <h1 class="text-4xl font-bold text-center mb-8">Code Quest</h1>
+      <div class="bg-white dark:bg-gray-800 shadow rounded p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Challenge</h2>
+        <pre
+          class="bg-gray-50 dark:bg-gray-700 p-4 rounded border border-gray-200 dark:border-gray-700 whitespace-pre-wrap"
+        >
+{{.Quest}}
+      </pre
+        >
+      </div>
+      <div class="bg-white dark:bg-gray-800 shadow rounded p-6">
+        <form method="POST" action="/{{.UUID}}/submit">
+          <textarea
+            name="code"
+            rows="10"
+            class="w-full p-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow-sm focus:outline-none focus:border-blue-500 text-gray-900 dark:text-gray-100"
+            {{if
+            .Submitted}}readonly{{end}}
+          >
+{{- .Code -}}</textarea
+          >
+          {{if not .Submitted}}
+          <div class="mt-4">
+            <button
+              type="submit"
+              class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+            >
+              Submit
+            </button>
+          </div>
+          {{end}}
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,2 @@
+Welcome to the Code Quest!
+Your challenge is to write a function in Nasal that returns the factorial of a number.
