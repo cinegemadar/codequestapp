@@ -59,10 +59,12 @@ func main() {
 	// Parse the HTML template.
 	tmpl = template.Must(template.ParseFiles("template.html"))
 
-	// Use sessionHandler for all requests.
+	// Register endpoints.
 	http.HandleFunc("/", sessionHandler)
-	log.Println("Server started on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	http.HandleFunc("/health", healthHandler)
+
+	log.Println("Server starting on 0.0.0.0:8080")
+	log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
 }
 
 func loadQuest(filename string) (string, error) {
@@ -175,4 +177,10 @@ func renderPage(w http.ResponseWriter, uuid string, session *Session) {
 	if err := tmpl.Execute(w, data); err != nil {
 		http.Error(w, "Template error", http.StatusInternalServerError)
 	}
+}
+
+// healthHandler returns a 200 status code if the server is running.
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
 }
