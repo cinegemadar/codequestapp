@@ -3,18 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <title>Code Quest</title>
-    <!-- Tell the browser our page supports both themes -->
+    <!-- Fav icon using provided data URL -->
+    <link
+      href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAADAwMA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAEREAAAARAAAAAAAAAAEQAAAAAAAAABEAAAAAAAAAARAAAAAAAAABEAAAAAAAABEAAAAAAAABEAAAAAAAABEAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      rel="icon"
+      type="image/x-icon"
+    />
+    <!-- Declare support for both light and dark color schemes -->
     <meta name="color-scheme" content="light dark" />
     <!-- Configure Tailwind to use media queries for dark mode -->
     <script>
-      tailwind.config = {
-        darkMode: "media",
-      };
+      tailwind.config = { darkMode: "media" };
     </script>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- shadcn UI stylesheet (update URL if needed) -->
+    <!-- shadcn UI stylesheet (update URL as needed) -->
     <link rel="stylesheet" href="https://ui.shadcn.com/path/to/style.css" />
+    <!-- CodeMirror CSS from CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"
+    />
+    <style>
+      /* Style CodeMirror to use a monospaced, nerdfont-friendly font */
+      .CodeMirror {
+        font-family: "Fira Code", "Source Code Pro", monospace;
+        font-size: 14px;
+        height: auto;
+      }
+    </style>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
     <div class="container mx-auto p-4">
@@ -25,12 +42,14 @@
           class="bg-gray-50 dark:bg-gray-700 p-4 rounded border border-gray-200 dark:border-gray-700 whitespace-pre-wrap"
         >
 {{.Quest}}
-      </pre
-        >
+        </pre>
       </div>
       <div class="bg-white dark:bg-gray-800 shadow rounded p-6">
+        <h2 class="text-xl font-semibold mb-4">Your solution</h2>
         <form method="POST" action="/{{.UUID}}/submit">
+          <!-- Add an id to the textarea so CodeMirror can hook onto it -->
           <textarea
+            id="codeEditor"
             name="code"
             rows="10"
             class="w-full p-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow-sm focus:outline-none focus:border-blue-500 text-gray-900 dark:text-gray-100"
@@ -52,5 +71,55 @@
         </form>
       </div>
     </div>
+    <!-- Footer with links -->
+    <footer class="mt-8 border-t pt-4">
+      <div class="container mx-auto px-4">
+        <div
+          class="flex flex-col items-center justify-center space-y-2 sm:space-y-0 sm:flex-row sm:space-x-4"
+        >
+          <a
+            href="https://github.com/cinegemadar/codequestapp"
+            target="_blank"
+            class="text-sm text-gray-600 dark:text-gray-400 hover:underline"
+          >
+            GitHub Repository
+          </a>
+          <a href="https://www.cloudflare.com/" target="_blank">
+            <img
+              src="https://cf-assets.www.cloudflare.com/slt3lc6tev37/fdh7MDcUlyADCr49kuUs2/5f780ced9677a05d52b05605be88bc6f/cf-logo-v-rgb.png"
+              alt="Cloudflare"
+              class="h-8"
+            />
+          </a>
+          <a href="https://aws.amazon.com/" target="_blank">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg"
+              alt="AWS"
+              class="h-8"
+            />
+          </a>
+        </div>
+      </div>
+    </footer>
+    <!-- CodeMirror JS from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <!-- Initialize CodeMirror on the textarea -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var editorElem = document.getElementById("codeEditor");
+        var isReadOnly = editorElem.hasAttribute("readonly");
+        var editor = CodeMirror.fromTextArea(editorElem, {
+          lineNumbers: true,
+          mode: "null", // No syntax highlighting
+          theme: "default",
+          readOnly: isReadOnly ? "nocursor" : false,
+          viewportMargin: Infinity,
+        });
+        // Ensure the textarea is updated on form submission.
+        document.querySelector("form").addEventListener("submit", function () {
+          editor.save();
+        });
+      });
+    </script>
   </body>
 </html>
