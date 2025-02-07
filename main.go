@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	google_uuid "github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -127,7 +128,10 @@ func sessionHandler(w http.ResponseWriter, r *http.Request) {
 	// Remove leading/trailing slashes and split the path.
 	path := strings.Trim(r.URL.Path, "/")
 	if path == "" {
-		http.NotFound(w, r)
+		newUUID := google_uuid.NewString()
+		redirect_url := "/" + newUUID
+		log.Printf("Redirecting to %s", redirect_url)
+		http.Redirect(w, r, redirect_url, http.StatusFound)
 		return
 	}
 	parts := strings.Split(path, "/")
